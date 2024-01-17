@@ -1,6 +1,6 @@
 CREATE DATABASE polo
 
---SCHEMA STH
+--SCHEMA STG
 CREATE SCHEMA stg; 
 
 --tabla para cargar datos
@@ -44,8 +44,8 @@ CREATE TABLE prod.Productos (
 [ID categoria] INT);
 INSERT INTO prod.Productos
 SELECT DISTINCT t1.CodigoProd,
-				t1.Producto,
-				CONVERT(INT,t2.[ID categoria]) AS categoria
+		t1.Producto,
+		CONVERT(INT,t2.[ID categoria]) AS categoria
 FROM stg.carga as t1
 left join prod.Categoria as t2
 ON t1.Categoria = t2.[categoria]
@@ -58,27 +58,27 @@ ID_Clientes VARCHAR (255) PRIMARY KEY,
 Nombre VARCHAR(255) NOT NULL);
 INSERT INTO prod.Clientes
 SELECT DISTINCT Codigo,
-				Cliente  
+		Cliente  
 FROM stg.carga
 
 SELECT * FROM prod.Clientes
 
 
----- tabla pais
+--tabla pais
 CREATE TABLE prod.Pais(
 ID_pais VARCHAR(255) PRIMARY KEY,
 Pais VARCHAR(255) NOT NULL);
 INSERT INTO prod.Pais
 SELECT DISTINCT [ID Pais],
-				Pais 
+		Pais 
 FROM stg.carga
 
 SELECT * FROM prod.Pais
 
----- tabla sucursal 
+--tabla sucursal 
 
 
-CREATE TABLE prod.Sucursales(
+CREATE TABLE  prod.Sucursales(
 ID_sucursal VARCHAR (255) PRIMARY KEY,
 cuidad VARCHAR (255) NOT NULL,
 Pais VARCHAR (255) NOT NULL);
@@ -90,7 +90,7 @@ FROM stg.carga
 
 SELECT * FROM prod.sucursales
 
----- tabla vendedores
+--tabla vendedores
 
 CREATE TABLE prod.Vendedores (
 ID_Vendedor VARCHAR (255) PRIMARY KEY,
@@ -103,7 +103,7 @@ FROM stg.carga
 SELECT * FROM prod.Vendedores
 
 
----- tabla transacciones
+--tabla transacciones
 CREATE TABLE prod.Transacciones (
 ID_Operacion INT PRIMARY KEY IDENTITY,
 Fecha DATE NOT NULL,
@@ -168,16 +168,16 @@ ADD CONSTRAINT FK_tras_prod
 FOREIGN KEY (ID_Producto) REFERENCES prod.Productos([ID producto])
 ON DELETE NO ACTION ON UPDATE NO ACTION; 
 
---- relacion entre transacciones y clientes
+--relacion entre transacciones y clientes
 ALTER TABLE prod.Transacciones
 ADD CONSTRAINT FK_tras_cliente
 FOREIGN KEY (ID_Cliente) REFERENCES prod.Clientes(ID_clientes)
 ON DELETE NO ACTION ON UPDATE NO ACTION; 
 
----cantidad de articulos vendidos por categoria
+--cantidad de articulos vendidos por categoria
 
-SELECT T3.Categoria, 
-		SUM(Cantidad) AS cantidad_vendida
+SELECT  T3.Categoria, 
+	SUM(Cantidad) AS cantidad_vendida
 FROM prod.Transacciones AS T1
 LEFT JOIN prod.Productos AS T2
  ON T1.ID_Producto = T2.[ID producto]
@@ -185,7 +185,7 @@ LEFT JOIN prod.Categoria AS T3
  ON T3.[ID categoria] = T2.[ID categoria]
 GROUP BY T3.Categoria
 
----- funcion para calcular los artuculos x categoria
+--funcion para calcular los artuculos x categoria
 
 GO
 CREATE FUNCTION prod.venta_x_categorias(@v_categoria VARCHAR(255))
